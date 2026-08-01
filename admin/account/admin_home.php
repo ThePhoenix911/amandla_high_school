@@ -2,20 +2,6 @@
 
 
 
-        <div id="dropdown" >
-            <button>
-                <?php if(isset($admin_record['adminFName']) && isset($admin_record['adminLName'])) {
-                        echo $admin_record['adminFName'] . ' ' . $admin_record['adminLName'];
-                    };
-                ?>
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div id="dropdown-profile">
-                <a href="?action=admin_update_form">Edit Profile</a>
-                <a href="?action=admin_logout">Logout</a>
-            </div>
-        </div>
-
 
 <!--        <iframe-->
 <!--                src="http://localhost:3000/public/dashboard/7d504ffc-9824-4cf6-8a37-3efbdc6d21b6"-->
