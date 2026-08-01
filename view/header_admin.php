@@ -13,21 +13,6 @@
         </a>
     </div>
 
-    <div id="dropdown">
-        <button>
-            <i class="fa-solid fa-circle-user"></i>
-            <?php
-                if(isset($_SESSION['adminName'])) {
-                    echo htmlspecialchars($_SESSION['adminName']);
-                }
-            ?>
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div id="dropdown-profile">
-            <a href="?action=admin_logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-        </div>
-    </div>
-
     <!-- Displays the form and it's navigation routes -->
     <div class="container">
 

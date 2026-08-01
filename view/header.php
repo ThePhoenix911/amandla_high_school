@@ -45,5 +45,36 @@
             <button id="theme_toggle" class="theme_toggle" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
                 <i class="fa-solid fa-moon"></i>
             </button>
+            <?php if(!empty($_SESSION['adminName'])): ?>
+                <div id="dropdown">
+                    <button type="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <span><?php echo htmlspecialchars($_SESSION['adminName']); ?></span>
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div id="dropdown-profile">
+                        <a href="?action=admin_logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            <?php elseif(!empty($_SESSION['parentName']) || !empty($parent_record['parentFName'])): ?>
+                <div id="dropdown">
+                    <button type="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <span>
+                            <?php 
+                                if(!empty($_SESSION['parentName'])) {
+                                    echo htmlspecialchars($_SESSION['parentName']);
+                                } else {
+                                    echo htmlspecialchars($parent_record['parentFName'] . ' ' . $parent_record['parentLName']);
+                                }
+                            ?>
+                        </span>
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div id="dropdown-profile">
+                        <a href="?action=parent_logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
    </header>

@@ -8,23 +8,6 @@
         </a>
     </div>
 
-    <div id="dropdown">
-        <button>
-            <i class="fa-solid fa-circle-user"></i>
-            <?php 
-                if(!empty($_SESSION['parentName'])) {
-                    echo htmlspecialchars($_SESSION['parentName']);
-                } elseif(isset($parent_record['parentFName']) && isset($parent_record['parentLName'])) {
-                    echo htmlspecialchars($parent_record['parentFName'] . ' ' . $parent_record['parentLName']);
-                }
-            ?>
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div id="dropdown-profile">
-            <a href="?action=parent_logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-        </div>
-    </div>
-
     <!-- Displays the form and it's navigation routes -->
     <div class="container">
 

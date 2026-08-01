@@ -17,7 +17,7 @@ class WaitingListDB
 
             //the FETCH_ASSOC ensures that the record is returned as an associative array
             //the keys are column names which will be used to access the data from each cell
-            $list_records = $statement->fetch(PDO::FETCH_ASSOC);
+            $list_records = $statement->fetchAll(PDO::FETCH_ASSOC);
             $statement->closeCursor();
             return $list_records;
         } catch (PDOException $e) {
@@ -87,7 +87,7 @@ class WaitingListDB
     }
 
     //Checks the Students on the waiting list by grade
-    public static function getListByStudentNum(string $studentGrade)
+    public static function getListByGrade(string $studentGrade)
     {
         $db = Database::connectToDB();
         $query = 'SELECT w.*, s.studGrade
@@ -100,13 +100,18 @@ class WaitingListDB
             $statement = $db->prepare($query);
             $statement->bindValue(':student_grade', $studentGrade);
             $statement->execute();
-            $list_record = $statement->fetch(PDO::FETCH_ASSOC);
+            $list_record = $statement->fetchAll(PDO::FETCH_ASSOC);
             $statement->closeCursor();
             return $list_record;
 
         } catch (PDOException $e) {
             return $e->getMessage();
         }
+    }
+
+    public static function getListByStudentNum(string $studentGrade)
+    {
+        return self::getListByGrade($studentGrade);
     }
 
 

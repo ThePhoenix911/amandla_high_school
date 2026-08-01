@@ -191,7 +191,7 @@ function initNavTabEffects() {
 }
 
 /**
- * 6. User Profile Dropdown Toggle & Click Outside
+ * 6. User Profile Dropdown Toggle, Hover Grace Period & Click Outside
  */
 function initDropdownToggle() {
     const dropdown = document.querySelector('#dropdown');
@@ -200,14 +200,58 @@ function initDropdownToggle() {
     const button = dropdown.querySelector('button');
     if (!button) return;
 
+    let closeTimer = null;
+
+    const showMenu = () => {
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+        dropdown.classList.add('open');
+        button.setAttribute('aria-expanded', 'true');
+    };
+
+    const hideMenuWithDelay = () => {
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+        }
+        // 400ms grace period so moving the cursor from button to logout link never vanishes prematurely
+        closeTimer = setTimeout(() => {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+        }, 400);
+    };
+
+    // Toggle on button click
     button.addEventListener('click', (e) => {
         e.stopPropagation();
-        dropdown.classList.toggle('open');
+        if (dropdown.classList.contains('open')) {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+        } else {
+            showMenu();
+        }
     });
 
+    // Smooth hover with grace period
+    dropdown.addEventListener('mouseenter', showMenu);
+    dropdown.addEventListener('mouseleave', hideMenuWithDelay);
+
+    // Close when clicking outside
     document.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target)) {
+            if (closeTimer) clearTimeout(closeTimer);
             dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (closeTimer) clearTimeout(closeTimer);
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
         }
     });
 }

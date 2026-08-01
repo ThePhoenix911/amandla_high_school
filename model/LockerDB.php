@@ -52,7 +52,7 @@ class LockerDB
 
 
     /************************* INPUT DATA **************************/
-    public static function updateLockerStatus(String $student_num, String $locker_status): string
+    public static function updateLockerStatus(String $locker_num, String $locker_status): string
     {
         $db = Database::connectToDB();
 
@@ -63,11 +63,11 @@ class LockerDB
         try {
             $statement = $db->prepare($query);
             $statement->bindValue(':locker_status', $locker_status);
-            $statement->bindValue(':student_num', $student_num);
+            $statement->bindValue(':locker_num', intval($locker_num));
             $statement->execute();
             $row_count = $statement->rowCount();
             $statement->closeCursor();
-            return $row_count;
+            return strval($row_count);
 
         } catch (PDOException $e) {
             return $e->getMessage();

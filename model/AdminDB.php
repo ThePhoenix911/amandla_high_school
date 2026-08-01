@@ -72,8 +72,8 @@ class AdminDB {
         $query = 'UPDATE admin
                     SET adminFName = :admin_fName, 
                         adminLName = :admin_lName, 
-                        adminEmail = :admin_email,
-                        adminPhone = :admin_phone';
+                        adminPhoneNum = :admin_phone
+                    WHERE adminEmail = :admin_email';
 
         try {
             $statement = $db->prepare($query);
@@ -84,6 +84,7 @@ class AdminDB {
             $statement->execute();
             $row_count = $statement->rowCount();
             $statement->closeCursor();
+            return $row_count;
         }catch (PDOException $e){
             return $e->getMessage();
         }

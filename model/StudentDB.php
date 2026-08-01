@@ -78,17 +78,19 @@ class StudentDB
         $db = Database::connectToDB();
         $query = 'UPDATE student
                     SET 
-                        studNum = :stud_num, 
                         studFName = :stud_fName, 
                         studLName = :stud_lName, 
-                        studGrade = :stud_grade';
+                        studGrade = :stud_grade,
+                        parentID = :parent_id
+                    WHERE studNum = :stud_num';
 
         try {
             $statement = $db->prepare($query);
-            $statement->bindValue(':stud_num', $student->getParentID());
+            $statement->bindValue(':stud_num', $student->getStudentNum());
             $statement->bindValue(':stud_fName', $student->getStudentFName());
             $statement->bindValue(':stud_lName', $student->getStudentLName());
             $statement->bindValue(':stud_grade', $student->getStudentGrade());
+            $statement->bindValue(':parent_id', $student->getParentID());
             $statement->execute();
             $row_count = $statement->rowCount();
             $statement->closeCursor();
@@ -98,7 +100,7 @@ class StudentDB
         }
     }
 
-    public static function deleteStudent(String $student_num): int
+    public static function deleteStudent(String $student_num): int|string
     {
         $db = Database::connectToDB();
 

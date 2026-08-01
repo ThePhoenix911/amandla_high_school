@@ -29,7 +29,7 @@ class PaymentDB
 
     /************************* INPUT DATA **************************/
     public static function addLockerPayment(String $student_num, String $payment_verified, String $payment_amount,
-                                            String $payment_data, String $outstanding_balance, String  $temp_locker_num): string
+                                            String $payment_date, String $outstanding_balance, String $temp_locker_num): string
     {
         $db = Database::connectToDB();
 
@@ -40,22 +40,20 @@ class PaymentDB
 
         try {
             $statement = $db->prepare($query);
-            $statement->bindValue(':student_num', intval($student_num));
-            $statement->bindValue(':payment_verified', boolval($payment_verified));
-            $statement->bindValue(':payment_amount', $payment_amount);
-            $statement->bindValue(':payment_date', $payment_data);
+            $statement->bindValue(':student_num', $student_num);
+            $statement->bindValue(':payment_verified', $payment_verified ? 1 : 0, PDO::PARAM_INT);
+            $statement->bindValue(':amount', $payment_amount);
+            $statement->bindValue(':payment_date', $payment_date);
             $statement->bindValue(':outstanding_balance', $outstanding_balance);
-            $statement->bindValue(':temp_locker_num', $temp_locker_num);
+            $statement->bindValue(':temp_locker_num', intval($temp_locker_num));
             $statement->execute();
-            $temp_locker_num = $db->lastInsertId();
+            $payment_id = $db->lastInsertId();
             $statement->closeCursor();
-            return $temp_locker_num;
+            return strval($payment_id);
 
         } catch (PDOException $e) {
             return $e->getMessage();
         }
 
     }
-
-
 }

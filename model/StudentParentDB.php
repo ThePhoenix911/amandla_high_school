@@ -101,7 +101,6 @@ class StudentParentDB
         $db = Database::connectToDB();
         $query = 'UPDATE parent
                     SET 
-                        parentID = :parent_id, 
                         parentTitle = :parent_title, 
                         parentFName = :parent_fName, 
                         parentLName = :parent_lName, 
@@ -110,7 +109,8 @@ class StudentParentDB
                         parentStreetName = :parent_street, 
                         parentCity = :parent_city, 
                         parentPostalCode = :parent_postal, 
-                        parentPhoneNum = :parent_phone';
+                        parentPhoneNum = :parent_phone
+                    WHERE parentID = :parent_id';
 
         try {
             $statement = $db->prepare($query);
@@ -133,7 +133,7 @@ class StudentParentDB
         }
     }
 
-    public static function deleteParent(StudentParent $parent): int
+    public static function deleteParent(StudentParent $parent): int|string
     {
         $db = Database::connectToDB();
 

@@ -17,7 +17,7 @@ class YearLockerDB
 
             //the FETCH_ASSOC ensures that the record is returned as an associative array
             //the keys are column names which will be used to access the data from each cell
-            $lockers = $statement->fetch(PDO::FETCH_ASSOC);
+            $lockers = $statement->fetchAll(PDO::FETCH_ASSOC);
             $statement->closeCursor();
             return $lockers;
         } catch (PDOException $e) {
@@ -49,17 +49,17 @@ class YearLockerDB
     {
         $db = Database::connectToDB();
 
-        $query = 'INSERT INTO yearlocker (studNum, tempLockerNum) 
-                    VALUES (:student_num, :locker_num)';
+        $query = 'INSERT INTO yearlocker (yearLockerAssignedDate, studNum, tempLockerNum) 
+                    VALUES (NOW(), :student_num, :locker_num)';
 
         try {
             $statement = $db->prepare($query);
             $statement->bindValue(':student_num', $student_num);
-            $statement->bindValue(':locker_num', $temp_locker_num);
+            $statement->bindValue(':locker_num', intval($temp_locker_num));
             $statement->execute();
             $locker_num = $db->lastInsertId();
             $statement->closeCursor();
-            return $locker_num;
+            return strval($locker_num);
 
         } catch (PDOException $e) {
             return $e->getMessage();

@@ -29,7 +29,7 @@ class  FieldRequirements {
     }
 
     public static function isFieldLengthGreaterThan($field, $max): bool {
-        if(strlen($field) >= $max) {
+        if(strlen($field) > $max) {
             return true;
         }else {
             return false;

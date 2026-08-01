@@ -194,6 +194,38 @@ class AdminActionsController
     public static function addPayment(): void
     {
         self::checkAdminLogin();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pay_stud_num'])) {
+            $pay_stud_num = trim(filter_input(INPUT_POST, 'pay_stud_num'));
+            $pay_verified = trim(filter_input(INPUT_POST, 'pay_verified'));
+            $pay_amount = trim(filter_input(INPUT_POST, 'pay_amount'));
+            $pay_date = trim(filter_input(INPUT_POST, 'pay_date'));
+            $pay_balance = trim(filter_input(INPUT_POST, 'pay_balance'));
+            $pay_locker = trim(filter_input(INPUT_POST, 'pay_locker'));
+
+            if (empty($pay_stud_num) || empty($pay_amount) || empty($pay_locker)) {
+                $error_message = 'Please fill in all required payment fields.';
+                $action = 'add_payment';
+                include(__DIR__ . '/../admin/actions/add_payment.php');
+                exit;
+            }
+
+            if (empty($pay_date)) {
+                $pay_date = date('Y-m-d H:i:s');
+            }
+
+            $result = PaymentDB::addLockerPayment($pay_stud_num, $pay_verified ?: '1', $pay_amount, $pay_date, $pay_balance ?: '0.00', $pay_locker);
+            if (!is_numeric($result)) {
+                $error_message = 'Error recording payment: ' . $result;
+                $action = 'add_payment';
+                include(__DIR__ . '/../admin/actions/add_payment.php');
+                exit;
+            }
+
+            self::viewPayments();
+            exit;
+        }
+
         $action = 'add_payment'; // Fixes CSS
         include(__DIR__ . '/../admin/actions/add_payment.php');
         exit;
@@ -202,9 +234,6 @@ class AdminActionsController
     public static function registerParent(): void
     {
         self::checkAdminLogin();
-
-
-        unset($_SESSION['user_id']);
         /*****************************************  GET THE Parent's DATA  *******************************************/
 
         $parent_id = trim(filter_input(INPUT_POST, 'parent_id'));
@@ -481,7 +510,7 @@ class AdminActionsController
         $year_locker = YearLockerDB::getYearLockerByStudNum($student_num);
 
         //Check if the student is on waiting list
-        $waiting_list = WaitingListDB::getListByStudentNum($student_num);
+        $waiting_list = WaitingListDB::getListByStudNum($student_num);
 
 
         $has_locker = 'No';
@@ -520,7 +549,7 @@ class AdminActionsController
 
         /******************************** INSERT THE DATA INTO THE DATABASE  *******************************/
         //Before inserting data, check if the user has already been placed on the waiting list
-        $waiting_list_exists = WaitingListDB::getListByStudentNum($_SESSION['stud_num']);
+        $waiting_list_exists = WaitingListDB::getListByStudNum($_SESSION['stud_num']);
 
         if($waiting_list_exists) {
             $error_message = 'Student already placed on waiting list';
@@ -551,11 +580,8 @@ class AdminActionsController
         //Get parent data
         $parent = StudentParentDB::getParentByID($parent_id);
 
-        //Since we only have access to two email addresses, we'll set them to static
-//        $admin_email = $admin_record['adminEmail'];
-//        $parent_email = $parent['parentEmail'];
-//        $parent_fName = $parent['parentFName'] . ' ' . $parent['parentLName'];
-        $subject = "$student: Locker Application Unsuccessful";
+        $stud_label = is_array($student) ? ($student['studFName'] . ' ' . $student['studLName'] . ' (' . $student['studNum'] . ')') : $_SESSION['stud_num'];
+        $subject = "$stud_label: Locker Application Unsuccessful";
         $message = "Dear Parent.
                     Unfortunately, the lockers are currently fully booked and as such the student has been placed on waiting list and will be assigned a temporary locker
                     as soon as the locker space is available.\r\n
@@ -563,8 +589,6 @@ class AdminActionsController
 
 
         $response = SendMail::sendEmail('mabaso.menzi911@gmail.com', 'dyondzo.curfew@gmail.com', 'Dyondzo', $subject, $message);
-
-        echo json_encode($response);
 
         /******************************** REDIRECT TO THE VIEW WAITING LIST PAGE  *******************************/
         //At this stage this means the student has been placed on the waiting list
@@ -631,9 +655,7 @@ class AdminActionsController
 
 
         /************************* UPDATE LOCKER STATUS TO BOOKED **************************/
-        $row_count = LockerDB::updateLockerStatus($student_num, 'booked');
-
-        echo json_encode($row_count);
+        $row_count = LockerDB::updateLockerStatus($locker_num, 'booked');
 
 
         //Since we only have access to two email addresses, we'll set them to static
