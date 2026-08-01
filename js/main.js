@@ -1,42 +1,176 @@
-let eye_tag = document.querySelector(".fas.fa-eye-slash");
-let password_tags = document.querySelectorAll("input[type='password']");
+/**
+ * Amandla High School - Interactive Frontend Script
+ */
 
-console.log(password_tags);
+document.addEventListener('DOMContentLoaded', () => {
+    initPasswordToggle();
+    initLiveTableSearch();
+    initDestructiveActionConfirmations();
+    initButtonRipples();
+    initNavTabEffects();
+});
 
-eye_tag.addEventListener('click', (e) => {
-    let input_password1 = password_tags[0];
-    let input_password2 = password_tags[1];
-    console.log(input_password1);
-    console.log(input_password2);
-    if(input_password1.type === "password"){
-        input_password1.type = "text";
+/**
+ * 1. Password Visibility Toggle
+ */
+function initPasswordToggle() {
+    const eyeTags = document.querySelectorAll('form fieldset div#password_eye i, .password_eye i, .fa-eye-slash, .fa-eye');
+    const passwordInputs = document.querySelectorAll("input[type='password'], input[name*='password']");
 
-        if(input_password2 !== null) {input_password2.type = "text";}
+    if (!eyeTags.length || !passwordInputs.length) return;
 
-        i_tag.classList.remove("fas", "fa-eye-slash");
-        i_tag.classList.add("fa-solid", "fa-eye");
-        i_tag.style.color = "#000"
+    eyeTags.forEach(eyeTag => {
+        eyeTag.setAttribute('role', 'button');
+        eyeTag.setAttribute('aria-label', 'Toggle password visibility');
+        eyeTag.setAttribute('tabindex', '0');
 
-    }else  {
-        input_password1.type = "password";
+        const toggleVisibility = () => {
+            const isCurrentlyPassword = passwordInputs[0].type === 'password';
 
-        if(input_password2 !== null) {input_password2.type = "password";}
+            passwordInputs.forEach(input => {
+                if (input) {
+                    input.type = isCurrentlyPassword ? 'text' : 'password';
+                }
+            });
 
+            if (isCurrentlyPassword) {
+                eyeTag.classList.remove('fa-eye-slash');
+                eyeTag.classList.add('fa-eye');
+                eyeTag.style.color = '#2563eb';
+            } else {
+                eyeTag.classList.remove('fa-eye');
+                eyeTag.classList.add('fa-eye-slash');
+                eyeTag.style.color = '#94a3b8';
+            }
+        };
 
-        i_tag.classList.remove("fa-solid", "fa-eye");
-        i_tag.classList.add("fas", "fa-eye-slash");
-        i_tag.style.color = "#ccc"
+        eyeTag.addEventListener('click', toggleVisibility);
+        eyeTag.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleVisibility();
+            }
+        });
+    });
+}
 
+/**
+ * 2. Real-Time Table Search & Filter
+ */
+function initLiveTableSearch() {
+    const tables = document.querySelectorAll('table#waiting_table, .container table');
 
-    }
-})
+    tables.forEach((table, index) => {
+        // Skip if table has only 1 row (header only) or already has a search bar
+        const tbody = table.querySelector('tbody') || table;
+        const rows = Array.from(tbody.querySelectorAll('tr')).filter((_, i) => i > 0);
+        if (rows.length === 0) return;
 
+        // Create search bar container above table
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'table_search_wrapper';
+        searchContainer.innerHTML = `
+            <div class="search_input_group">
+                <i class="fa-solid fa-magnifying-glass search_icon"></i>
+                <input type="text" class="table_search_input" placeholder="Quick search records..." aria-label="Search table">
+                <span class="search_counter">${rows.length} records</span>
+            </div>
+        `;
 
-let disable_btns = document.querySelectorAll('.disable_btn');
+        table.parentNode.insertBefore(searchContainer, table);
 
+        const searchInput = searchContainer.querySelector('.table_search_input');
+        const counter = searchContainer.querySelector('.search_counter');
 
-if(disable_btns){
-    disable_btns.forEach(btn => btn.addEventListener('click', e => {
-        e.preventDefault();
-    }));
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            counter.textContent = `${visibleCount} of ${rows.length} records`;
+        });
+    });
+}
+
+/**
+ * 3. Interactive Confirmations for Destructive Actions
+ */
+function initDestructiveActionConfirmations() {
+    const destructiveForms = document.querySelectorAll('form.unstyle_form, form[action*="cancel"], form[action*="remove"], form[action*="suspend"]');
+
+    destructiveForms.forEach(form => {
+        const actionInput = form.querySelector('input[name="action"]');
+        const action = actionInput ? actionInput.value : '';
+
+        form.addEventListener('submit', (e) => {
+            let message = 'Are you sure you want to proceed with this action?';
+
+            if (action === 'cancel_application') {
+                message = 'Are you sure you want to cancel this student application? This action cannot be undone.';
+            } else if (action === 'suspend_temp_locker') {
+                message = 'Are you sure you want to suspend this locker?';
+            } else if (action === 'remove_from_waiting_list') {
+                message = 'Are you sure you want to remove this student from the waiting list?';
+            }
+
+            if (!confirm(message)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Disable buttons handling
+    const disableBtns = document.querySelectorAll('.disable_btn');
+    disableBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+        });
+    });
+}
+
+/**
+ * 4. Button Click Ripple & Micro-Interaction
+ */
+function initButtonRipples() {
+    const buttons = document.querySelectorAll('.btnSubmit, .portal_card, #dropdown button');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple_effect';
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+}
+
+/**
+ * 5. Navigation Tab Smooth Effects
+ */
+function initNavTabEffects() {
+    const navItems = document.querySelectorAll('#nav a.nav_item');
+    navItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+    });
 }
