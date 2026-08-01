@@ -5,16 +5,16 @@
    2. TYPOGRAPHY & GENERAL LINKS ............. [code lines: 110 - 178]
    3. MAIN LAYOUT & CONTAINERS ............... [code lines: 185 - 233]
    4. HEADER & TOP NAVIGATION ................ [code lines: 240 - 312]
-   5. USER PROFILE & DROPDOWN MENU ........... [code lines: 319 - 386]
-   6. DASHBOARD CARDS / QUICK LINKS (#wrapper) [code lines: 393 - 499]
-   7. ICONS & FONTAWESOME (<i class="fa...">)  [code lines: 506 - 559]
-   8. GENERAL FORM STYLING ................... [code lines: 566 - 710]
-   9. MULTI-STEP FORM INDICATORS ............. [code lines: 717 - 780]
-   10. DATA TABLES & INLINE TABLE ACTIONS .... [code lines: 787 - 918]
-   11. STUDENT BOOKING & LINKING ............. [code lines: 925 - 1015]
-   12. WAITING LIST & LOCKER STATISTICS ...... [code lines: 1022 - 1094]
-   13. EMBEDDED MEDIA (IFRAME) ............... [code lines: 1101 - 1110]
-   14. FOOTER ................................ [code lines: 1117 - 1126]
+   5. USER PROFILE & DROPDOWN MENU ........... [code lines: 319 - 405]
+   6. DASHBOARD CARDS / QUICK LINKS (#wrapper) [code lines: 412 - 518]
+   7. ICONS & FONTAWESOME (<i class="fa...">)  [code lines: 525 - 578]
+   8. GENERAL FORM STYLING ................... [code lines: 585 - 729]
+   9. MULTI-STEP FORM INDICATORS ............. [code lines: 736 - 799]
+   10. DATA TABLES & INLINE TABLE ACTIONS .... [code lines: 806 - 937]
+   11. STUDENT BOOKING & LINKING ............. [code lines: 944 - 1034]
+   12. WAITING LIST & LOCKER STATISTICS ...... [code lines: 1041 - 1113]
+   13. EMBEDDED MEDIA (IFRAME) ............... [code lines: 1120 - 1129]
+   14. FOOTER ................................ [code lines: 1136 - 1145]
    ========================================================================== */
 
 :root {
@@ -321,6 +321,7 @@ header h1 {
     top: 1.8rem;
     right: 2rem;
     z-index: 100;
+    padding-bottom: 0.5rem;
 }
 
 #dropdown button {
@@ -340,7 +341,8 @@ header h1 {
     transition: var(--transition-base);
 }
 
-#dropdown button:hover {
+#dropdown button:hover,
+#dropdown.open button {
     background: var(--bg-surface);
     border-color: var(--primary);
     color: var(--primary);
@@ -348,10 +350,16 @@ header h1 {
     transform: translateY(-1px);
 }
 
+#dropdown button:hover i.fa-caret-down,
+#dropdown.open button i.fa-caret-down {
+    transform: rotate(180deg);
+    color: var(--primary);
+}
+
 #dropdown-profile {
     display: none;
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: calc(100% + 2px);
     right: 0;
     min-width: 12rem;
     z-index: 100;
@@ -361,6 +369,16 @@ header h1 {
     box-shadow: var(--shadow-xl);
     overflow: hidden;
     animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Invisible hover bridge to eliminate gap */
+#dropdown-profile::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
 }
 
 #dropdown-profile a {
@@ -381,7 +399,8 @@ header h1 {
     padding-left: 1.45rem;
 }
 
-#dropdown:hover #dropdown-profile {
+#dropdown:hover #dropdown-profile,
+#dropdown.open #dropdown-profile {
     display: block;
 }
 

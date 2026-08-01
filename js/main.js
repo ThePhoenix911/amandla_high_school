@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDestructiveActionConfirmations();
     initButtonRipples();
     initNavTabEffects();
+    initDropdownToggle();
 });
 
 /**
@@ -172,5 +173,27 @@ function initNavTabEffects() {
         item.addEventListener('mouseenter', () => {
             item.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
         });
+    });
+}
+
+/**
+ * 6. User Profile Dropdown Toggle & Click Outside
+ */
+function initDropdownToggle() {
+    const dropdown = document.querySelector('#dropdown');
+    if (!dropdown) return;
+
+    const button = dropdown.querySelector('button');
+    if (!button) return;
+
+    button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
     });
 }
