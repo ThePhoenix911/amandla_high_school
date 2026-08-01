@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initButtonRipples();
     initNavTabEffects();
     initDropdownToggle();
+    initThemeToggle();
 });
 
 /**
@@ -196,4 +197,38 @@ function initDropdownToggle() {
             dropdown.classList.remove('open');
         }
     });
+}
+
+/**
+ * 7. Dark / Light Mode Theme Toggle
+ */
+function initThemeToggle() {
+    const toggleBtn = document.querySelector('#theme_toggle');
+    if (!toggleBtn) return;
+
+    const icon = toggleBtn.querySelector('i');
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateThemeIcon(icon, currentTheme);
+
+    toggleBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('mandla_theme', newTheme);
+        updateThemeIcon(icon, newTheme);
+    });
+}
+
+function updateThemeIcon(icon, theme) {
+    if (!icon) return;
+    if (theme === 'dark') {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        icon.style.color = '#fbbf24';
+    } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        icon.style.color = '';
+    }
 }
