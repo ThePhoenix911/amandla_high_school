@@ -7,7 +7,9 @@
             <h2>Register Student</h2>
             <input type="hidden" name="action" value="register_student">
             <fieldset>
-                <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+                <?php if(!empty($error_message)): ?>
+                    <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+                <?php endif; ?>
 
                 <label for="student_parent_id">Parent's ID Number:</label>
                 <input type="text" id="student_parent_id" name="student_parent_id" placeholder="ID Number" value="<?php echo htmlspecialchars($student_parent_id ?? '')?>" maxlength="13">

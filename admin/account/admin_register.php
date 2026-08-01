@@ -5,7 +5,9 @@
         <h2>Register Admin</h2>
         <input type="hidden" name="action" value="admin_register">
         <fieldset>
-            <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+            <?php if(!empty($error_message)): ?>
+                <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+            <?php endif; ?>
 
             <label for="admin_fName">First Name:</label>
             <input type="text" id="admin_fName" name="admin_fName" placeholder="First Name" value="<?php echo htmlspecialchars($admin_fName ?? '')?>" maxlength="60">

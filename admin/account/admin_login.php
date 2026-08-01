@@ -5,7 +5,9 @@
         <h2><i class="fa-solid fa-user-tie"></i>Login Admin</h2>
         <input type="hidden" name="action" value="admin_login">
         <fieldset>
-            <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+            <?php if(!empty($error_message)): ?>
+                <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+            <?php endif; ?>
 
             <label for="admin_email">Email:</label>
             <input type="email" id="admin_email" name="admin_email" value="<?php if(isset($admin_email)) echo $admin_email; ?>" maxlength="255" placeholder="Email">

@@ -5,7 +5,9 @@
             <h2><i class="fa-solid fa-user"></i>Login Parent</h2>
             <input type="hidden" name="action" value="parent_login">
             <fieldset>
-                <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+                <?php if(!empty($error_message)): ?>
+                    <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+                <?php endif; ?>
 
                 <label for="parent_email">Email:</label>
                 <input type="email" id="parent_email" name="parent_email" value="<?php echo htmlspecialchars($parent_email ?? '')?>" maxlength="255" placeholder="Email">

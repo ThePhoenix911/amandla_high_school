@@ -3,6 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initErrorDisplay();
     initPasswordToggle();
     initLiveTableSearch();
     initDestructiveActionConfirmations();
@@ -11,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initDropdownToggle();
     initThemeToggle();
 });
+
+/**
+ * 0. Error Display Cleanup
+ */
+function initErrorDisplay() {
+    const errorElements = document.querySelectorAll('.error, #parent_error, #payment_error');
+    errorElements.forEach(el => {
+        if (!el.textContent.trim()) {
+            el.style.display = 'none';
+        }
+    });
+}
 
 /**
  * 1. Password Visibility Toggle

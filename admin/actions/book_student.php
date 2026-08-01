@@ -8,7 +8,9 @@
         <div id="link_student_header">
             <div>
                 <label for="link_student_num">Student Number:</label>
-                <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span>
+                <?php if(!empty($error_message)): ?>
+                    <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+                <?php endif; ?>
             </div>
             <input type="text" id="link_student_num" name="link_student_num" placeholder="Student Number" value="<?php echo htmlspecialchars($link_student_num ?? '')?>" maxlength="6">
         </div>
@@ -62,7 +64,9 @@
                     <input type="hidden" name="action" value="place_on_waiting_list">
                     <label for="submit">Place Student on waiting list</label>
                     <input type="submit" value="Place Student" class="btnSubmit">
-                    <span class="error"><?php if(isset($error_message)) echo $error_message; ?></span>
+                    <?php if(!empty($error_message)): ?>
+                        <span class="error"><?php echo htmlspecialchars($error_message); ?></span>
+                    <?php endif; ?>
                 </form>
             </div>
         <?php endif; ?>

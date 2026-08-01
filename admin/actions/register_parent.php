@@ -8,7 +8,9 @@
             <input type="hidden" name="action" value="register_parent">
 
             <fieldset>
-                <span id="parent_error" class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+                <?php if(!empty($error_message)): ?>
+                    <span id="parent_error" class="error"><?php echo htmlspecialchars($error_message); ?></span>
+                <?php endif; ?>
 
                 <label for="parent_id">ID Number:</label>
                 <input type="text" id="parent_id" name="parent_id" placeholder="ID Number" value="<?php echo htmlspecialchars($parent_id ?? '')?>" maxlength="13">

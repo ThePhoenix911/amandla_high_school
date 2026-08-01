@@ -8,7 +8,9 @@
     <input type="hidden" name="action" value="add_payment">
 
     <fieldset>
-        <span id="payment_error" class="error"><?php if(isset($error_message)) echo $error_message; ?></span><br><br>
+        <?php if(!empty($error_message)): ?>
+            <span id="payment_error" class="error"><?php echo htmlspecialchars($error_message); ?></span>
+        <?php endif; ?>
 
         <label for="pay_stud_num">Student Number:</label>
         <input type="text" id="pay_stud_num" name="pay_stud_num" placeholder="Student Number" value="<?php echo htmlspecialchars($pay_stud_num ?? '')?>" maxlength="13">

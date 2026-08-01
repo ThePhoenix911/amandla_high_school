@@ -8,13 +8,13 @@
    5. USER PROFILE & DROPDOWN MENU ........... [code lines: 440 - 526]
    6. DASHBOARD CARDS / QUICK LINKS (#wrapper) [code lines: 533 - 639]
    7. ICONS & FONTAWESOME (<i class="fa...">)  [code lines: 646 - 699]
-   8. GENERAL FORM STYLING ................... [code lines: 706 - 850]
-   9. MULTI-STEP FORM INDICATORS ............. [code lines: 857 - 920]
-   10. DATA TABLES & INLINE TABLE ACTIONS .... [code lines: 927 - 1058]
-   11. STUDENT BOOKING & LINKING ............. [code lines: 1065 - 1155]
-   12. WAITING LIST & LOCKER STATISTICS ...... [code lines: 1162 - 1234]
-   13. EMBEDDED MEDIA (IFRAME) ............... [code lines: 1241 - 1250]
-   14. FOOTER ................................ [code lines: 1257 - 1266]
+   8. GENERAL FORM STYLING ................... [code lines: 706 - 854]
+   9. MULTI-STEP FORM INDICATORS ............. [code lines: 861 - 924]
+   10. DATA TABLES & INLINE TABLE ACTIONS .... [code lines: 931 - 1062]
+   11. STUDENT BOOKING & LINKING ............. [code lines: 1069 - 1159]
+   12. WAITING LIST & LOCKER STATISTICS ...... [code lines: 1166 - 1238]
+   13. EMBEDDED MEDIA (IFRAME) ............... [code lines: 1245 - 1254]
+   14. FOOTER ................................ [code lines: 1261 - 1270]
    ========================================================================== */
 
 :root {
@@ -794,6 +794,10 @@ form fieldset p {
     font-size: 0.9rem;
     margin-bottom: 1rem;
     animation: shake 0.4s ease-in-out;
+}
+
+.error:empty {
+    display: none !important;
 }
 
 .btnSubmit {
