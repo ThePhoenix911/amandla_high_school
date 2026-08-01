@@ -648,7 +648,8 @@ div#wrapper {
    ========================================================================== */
 
 /* Dashboard Quick-Link Card Icons */
-#wrapper i.fa-solid {
+.portal_card .card_icon_wrap i.fa-solid,
+div#wrapper > a.portal_card i.fa-solid {
     font-size: 2.8rem;
     color: var(--primary);
     transition: var(--transition-base);
@@ -940,34 +941,46 @@ div#table_container {
 /* Real-Time Table Search Bar */
 .table_search_wrapper {
     width: 100%;
-    margin: 1rem 0;
+    margin: 1.25rem 0 0.75rem;
     display: flex;
     justify-content: flex-end;
 }
 
 .search_input_group {
     position: relative;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     width: 100%;
     max-width: 22rem;
 }
 
-.search_input_group .search_icon {
+.search_input_group .search_icon,
+.search_input_group i.search_icon,
+.search_input_group svg.search_icon {
     position: absolute;
-    left: 1rem;
+    left: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    width: 0.85rem !important;
+    height: 0.85rem !important;
+    max-width: 0.85rem !important;
+    max-height: 0.85rem !important;
+    pointer-events: none;
+    z-index: 2;
 }
 
 .table_search_input {
     width: 100%;
-    padding: 0.65rem 1rem 0.65rem 2.6rem;
+    height: 2.4rem;
+    padding: 0.45rem 6rem 0.45rem 2.35rem;
     border: 1px solid var(--border-color);
     border-radius: 9999px;
     background: var(--bg-surface);
     color: var(--text-primary);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
     box-shadow: var(--shadow-sm);
     outline: none;
     transition: var(--transition-base);
@@ -980,10 +993,14 @@ div#table_container {
 
 .search_counter {
     position: absolute;
-    right: 1rem;
+    right: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-muted);
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 /* Modern Data Table */
