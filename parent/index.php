@@ -7,27 +7,18 @@ $dotenv->load();
 
 require_once __DIR__ . '/../model/FieldRequirements.php';
 require_once __DIR__ . '/../model/Database.php';
-require_once __DIR__ . '/../model/AdminDB.php';
-require_once __DIR__ . '/../model/Admin.php';
 require_once __DIR__ . '/../model/StudentParentDB.php';
 require_once __DIR__ . '/../model/StudentParent.php';
 require_once __DIR__ . '/../model/StudentDB.php';
 require_once __DIR__ . '/../model/Student.php';
 require_once __DIR__ . '/../model/User.php';
 require_once __DIR__ . '/../utils/Validate.php';
-require_once __DIR__ . '/../model/LockerDB.php';
-require_once __DIR__ . '/../model/TempLockerDB.php';
-require_once __DIR__ . '/../model/YearLockerDB.php';
-require_once __DIR__ . '/../model/WaitingListDB.php';
-require_once __DIR__ . '/../model/LockerSuspensionDB.php';
-require_once __DIR__ . '/../utils/SendMail.php';
-require_once __DIR__ . '/../model/PaymentDB.php';
-require_once __DIR__ . '/../controllers/AdminAccountController.php';
-require_once __DIR__ . '/../controllers/AdminActionsController.php';
+require_once __DIR__ . '/../controllers/ParentAccountController.php';
+require_once __DIR__ . '/../controllers/ParentActionsController.php';
+
 
 
 session_start();
-
 
 
 
@@ -40,25 +31,18 @@ $action = match(True) {
     //without the negate operation, the following two statements will not be accessed when action variable is not null
     !(is_null(filter_input(INPUT_POST, 'action'))) => filter_input(INPUT_POST,'action'),
     !(is_null(filter_input(INPUT_GET, 'action'))) => filter_input(INPUT_GET,'action'),
-    default => 'admin_login_form'
+    default => 'parent_login_form'
 };
 
+//Check if the action starts with 'parent' to route to ParentAccountController
+$prefix = substr($action, 0, 6);
 
 
-
-
-//if(isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
-//    //Get the Admin's data
-//    $admin_record = AdminDB::getAdminByID($_SESSION['user_id']);
-//
-//}
-
-$prefix = substr($action, 0, 5);
-
-
-if($prefix === 'admin') {
-   AdminAccountController::checkAccountAction($action);
+if($prefix === 'parent') {
+    ParentAccountController::checkAccountAction($action);
 } else {
     //Default action
-    AdminActionsController::checkAdminAction($action);
+    ParentActionsController::checkParentAction($action);
 }
+
+?>

@@ -1,11 +1,11 @@
 <?php
 
-class ActionsController
+class AdminActionsController
 {
     private static function checkAdminLogin(): void
     {
         if (!isset($_SESSION['user_id']) || !is_numeric($_SESSION['user_id'])) {
-            AccountController::displayLoginForm();
+            AdminAccountController::displayLoginForm();
             exit;
         }
     }
@@ -15,13 +15,15 @@ class ActionsController
     public static function viewReport(): void
     {
         self::checkAdminLogin();
-        include('account/admin_home.php');
+        $action = 'view_report'; // Fixes CSS
+        include(__DIR__ . '/../admin/account/admin_home.php');
         exit;
     }
 
     public static function view_registration_forms(): void
     {
         self::checkAdminLogin();
+        $action = 'view_registration_forms'; // Fixes CSS
         self::displayRegParentForm();
         exit;
     }
@@ -67,7 +69,8 @@ class ActionsController
         //Get the list of all student placed on the waiting list with the grades visible
         $waiting_list = WaitingListDB::getListWithGrades();
 
-        include('actions/view_waiting_list.php');
+        $action = 'view_waiting_list'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/view_waiting_list.php');
         exit;
 
     }
@@ -118,7 +121,8 @@ class ActionsController
         //Get the lockers
         $temp_lockers = TempLockerDB::getTempLockers();
 
-        include('actions/view_temp_lockers.php');
+        $action = 'view_temp_lockers'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/view_temp_lockers.php');
         exit;
 
     }
@@ -126,14 +130,25 @@ class ActionsController
     public static function viewLockerSuspension(): void
     {
         self::checkAdminLogin();
-        include('actions/view_locker_suspension.php');
+
+        $suspended_lockers = LockerSuspensionDB::getSuspendedLockers();
+        $action = 'view_locker_suspension'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/view_locker_suspension.php');
         exit;
     }
 
     public static function viewPayments(): void
     {
         self::checkAdminLogin();
-        include('actions/view_payments.php');
+
+        // 1. Fetch Data (Move logic from actions/index.php if needed)
+        $payments_results = PaymentDB::getLockerPayments();
+
+        // 2. Set Active Tab
+        $action = 'view_payments';
+
+        // 3. Include View directly (NO REDIRECTS)
+        include(__DIR__ . '/../admin/actions/view_payments.php');
         exit;
     }
 
@@ -143,14 +158,16 @@ class ActionsController
     public static function displayRegParentForm(): void
     {
         self::checkAdminLogin();
-        include('actions/register_parent.php');
+        $action = 'register_parent_form'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/register_parent.php');
         exit;
     }
 
     public static function displayRegStudentForm(): void
     {
         self::checkAdminLogin();
-        include('actions/register_student.php');
+        $action = 'register_student_form'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/register_student.php');
         exit;
     }
 
@@ -164,7 +181,8 @@ class ActionsController
     public static function displayBookStudentForm(): void
     {
         self::checkAdminLogin();
-        include('actions/book_student.php');
+        $action = 'book_student_form'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/book_student.php');
         exit;
     }
 
@@ -176,7 +194,8 @@ class ActionsController
     public static function addPayment(): void
     {
         self::checkAdminLogin();
-        include('actions/add_payment.php');
+        $action = 'add_payment'; // Fixes CSS
+        include(__DIR__ . '/../admin/actions/add_payment.php');
         exit;
     }
 
@@ -486,7 +505,7 @@ class ActionsController
         $_SESSION['has_locker'] = $has_locker;
         $_SESSION['on_waiting_list'] = $on_waiting_list;
 
-        include('actions/book_student.php');
+        include(__DIR__ . '/../admin/actions/book_student.php');
         exit;
 
     }
@@ -518,7 +537,7 @@ class ActionsController
             //Parent registration failed return to page and display error message
             $error_message = 'Error: (Failed to place Student on waiting list) - ' . $placement_result;
             self::displayRegStudentForm();
-            include('actions/register_student.php');
+            include(__DIR__ . '/../admin/actions/register_student.php');
             exit;
         }
 
@@ -699,6 +718,11 @@ class ActionsController
             case 'view_payments':
                 self::viewPayments();
                 break;
+
+            case 'add_payment':
+                self::addPayment();
+                break;
+
             case 'register_parent_form':
                 self::displayRegParentForm();
                 break;

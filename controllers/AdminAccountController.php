@@ -1,17 +1,17 @@
 <?php
 
-class AccountController
+class AdminAccountController
 {
 
     public static function displayLoginForm(): void
     {
-        include('account/admin_login.php');
+        include(__DIR__ . '/../admin/account/admin_login.php');
 
     }
 
     public static function displayRegisterForm(): void
     {
-        include('account/admin_register.php');
+        include(__DIR__ . '/../admin/account/admin_register.php');
 
     }
 
@@ -19,7 +19,7 @@ class AccountController
     {
         $admin_record = AdminDB::getAdminByID($_SESSION['user_id']); //place it outside
         $view_report = 'view_report';
-        include('account/admin_home.php');
+        include(__DIR__ . '/../admin/account/admin_home.php');
 
     }
 
@@ -48,7 +48,7 @@ class AccountController
             if (!empty($iValue['error_message'])) {
                 $error_message = $fields_results[$i]['error_message'];
                 $f_name = $fields_results[$i]['field_name'];
-                include('account/admin_login.php');
+                include(__DIR__ . '/../admin/account/admin_login.php');
                 return;
             }
         }
@@ -60,14 +60,14 @@ class AccountController
 
         if (!is_array($user_record)) {
             $error_message = 'The admin does not exist';
-            include('account/admin_login.php');
+            include(__DIR__ . '/../admin/account/admin_login.php');
             return;
         }
 
         $password_match = password_verify($admin_password1, $user_record['adminUserPassword']);
         if (!$password_match) {
             $error_message = 'Password is incorrect';
-            include('account/admin_login.php');
+            include(__DIR__ . '/../admin/account/admin_login.php');
             return;
         }
 
@@ -77,8 +77,9 @@ class AccountController
 
         $_SESSION['user_id'] = $user_record['adminUserID'];
         $admin_record = AdminDB::getAdmin($admin_email);
-        $view_report = 'view_report';
-        include('account/admin_home.php');
+        $_SESSION['adminName'] = $admin_record['adminFName'] . ' ' . $admin_record['adminLName'];
+        $action = 'view_report';
+        include(__DIR__ . '/../admin/account/admin_home.php');
 
     }
 
@@ -117,14 +118,14 @@ class AccountController
             if(!empty($iValue['error_message'])) {
                 $error_message = $fields_results[$i]['error_message'];
                 $f_name = $fields_results[$i]['field_name'];
-                include('account/admin_register.php');
+                include(__DIR__ . '/../admin/account/admin_register.php');
                 return;
             }
         }
 
         if(!FieldRequirements::isFieldMatch($admin_password1, $admin_password2)) {
                 $error_message = 'Both passwords must match';
-                include('account/admin_register.php');
+                include(__DIR__ . '/../admin/account/admin_register.php');
                 return;
             }
 
@@ -135,12 +136,22 @@ class AccountController
             $admin_id = AdminDB::addAdmin($admin);
             $user_id = AdminDB::addAdminUser($adminUser);
 
+
             if(is_numeric($user_id)) {
                 $_SESSION['user_id'] = $user_id;
+                $admin_record = AdminDB::getAdminByID((int)$admin_id);
+                $_SESSION['adminName'] = $admin_record['adminFName'] . ' ' . $admin_record['adminLName'];
+                self::displayAdminHome();
+            }else{
+                //An error occurred during registration,therefore delete admin record and return error message
+                AdminDB::deleteAdminByID((int)$admin_id);
+                $error_message = 'An error occurred during registration. Please try again later.';
+                include(__DIR__ . '/../admin/account/admin_register.php');
+                exit;
             }
-            $record = AdminDB::getAdminByID((int)$admin_id);
-            $user_record = AdminDB::getAdminUserByID((int)$user_id);
-            include('account/admin_home.php');
+
+
+
 
     }
 
@@ -162,8 +173,8 @@ class AccountController
         // Finally, destroy the session.
         session_destroy();
 
-        // Redirect to login page
-        header("Location: ./?action=admin_login_form");
+        // Back to the login page
+        include(__DIR__ . '/../admin/account/admin_login.php');
         exit;
     }
 
@@ -193,11 +204,9 @@ class AccountController
                 break;
 
             case 'view_report':
-                ActionsController::viewReport();
+                AdminActionsController::viewReport();
                 break;
 
-            default:
-                break;
         }
         exit;
     }
